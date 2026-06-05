@@ -1,15 +1,20 @@
 {
   "manifest_version": 3,
-  "name": "RMP x OSU",
+  "name": "BuckeyeCourseRatings",
   "version": "1.0.0",
-  "description": "Injects RateMyProfessors ratings next to instructor names on classes.osu.edu",
+  "description": "See RateMyProfessors ratings and reviews directly on the Ohio State University class search page. No more switching tabs.",
+  "minimum_chrome_version": "102",
   "icons": {
-    "128": "icons/icon.png"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
-      "128": "icons/icon.png"
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
   },
   "background": {

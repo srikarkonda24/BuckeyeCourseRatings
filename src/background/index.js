@@ -4,17 +4,6 @@ importScripts('../shared/constants.js', '../shared/utils.js');
 const ratingCache = new Map();
 
 /**
- * Logs a debug message when DEBUG is enabled.
- * @param {...*} args - Values to log.
- * @return {void}
- */
-function debugLog(...args) {
-  if (DEBUG) {
-    console.log('[RMP x OSU background]', ...args);
-  }
-}
-
-/**
  * Sends a POST request to the RMP GraphQL API.
  * @param {object} body - GraphQL request payload.
  * @return {Promise<object|null>} Parsed JSON or null on failure.
@@ -31,13 +20,11 @@ async function postGraphQL(body) {
     });
 
     if (!response.ok) {
-      debugLog('RMP request failed', response.status);
       return null;
     }
 
     return response.json();
-  } catch (error) {
-    debugLog('RMP fetch error', error);
+  } catch (_error) {
     return null;
   }
 }

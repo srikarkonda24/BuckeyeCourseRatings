@@ -8,17 +8,6 @@ let debounceTimerId = null;
 let observer = null;
 
 /**
- * Logs a debug message when DEBUG is enabled.
- * @param {...*} args - Values to log.
- * @return {void}
- */
-function debugLog(...args) {
-  if (DEBUG) {
-    console.log('[RMP x OSU content]', ...args);
-  }
-}
-
-/**
  * Requests a rating from the background service worker.
  * @param {string} name - Raw instructor name.
  * @return {Promise<object>} Rating response payload.
@@ -45,8 +34,8 @@ async function processInstructorEntry(entry) {
     }
 
     injectNotFoundBadge(entry.element);
-  } catch (error) {
-    debugLog('Failed to process instructor', entry.name, error);
+  } catch (_error) {
+    return;
   }
 }
 
@@ -110,7 +99,6 @@ function startObserver() {
   const root = getObserverRoot();
   observer = new MutationObserver(debouncedScan);
   observer.observe(root, { childList: true, subtree: true });
-  debugLog('Observer started on', root);
 }
 
 /**
