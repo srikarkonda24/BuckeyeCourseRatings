@@ -1,0 +1,84 @@
+# .cursorrules — RMP x OSU Chrome Extension
+
+## Project Overview
+A Chrome Extension (Manifest V3) that injects RateMyProfessors ratings inline
+on the Ohio State University course search page (classes.osu.edu).
+Personal use only — never to be published to the Chrome Web Store.
+
+---
+
+## Hard Rules — Never Violate These
+
+### No build tooling
+- NO npm, NO package.json, NO webpack, NO babel, NO bundler of any kind
+- NO external libraries or CDN imports
+- Pure vanilla JavaScript ES modules only
+- The extension is loaded via chrome://extensions → Load Unpacked — that's it
+
+### No CORS violations
+- ALL fetch calls to ratemyprofessors.com MUST go through src/background/index.js only
+- Content scripts NEVER make direct fetch calls to external domains
+- Content scripts communicate with background ONLY via chrome.runtime.sendMessage / onMessage
+- Violating this will silently fail due to CORS and is a hard architectural error
+
+### Manifest V3 only
+- Use "service_worker" in background, NOT "scripts" (that's MV2)
+- Use chrome.storage.local, NOT localStorage
+- No eval(), no remote code execution
+- host_permissions must include both "https://classes.osu.edu/*" and "https://www.ratemyprofessors.com/*"
+
+### File responsibilities — never cross these boundaries
+- background/index.js → ONLY: receive messages, call RMP API, return data
+- content/scraper.js → ONLY: find instructor name DOM nodes, return them
+- content/injector.js → ONLY: create and insert badge HTML elements into DOM
+- content/tooltip.js → ONLY: show/hide/position the hover tooltip
+- content/index.js → ONLY: boot the MutationObserver, wire the other modules together
+- shared/constants.js → ONLY: hardcoded values (no logic)
+- shared/utils.js → ONLY: pure functions with no DOM or Chrome API access
+
+---
+
+## Code Style Rules
+
+- Every function must have a JSDoc comment (description + @param + @return)
+- Functions must be under 30 lines — break them up if longer
+- No inline styles anywhere — all styles live in src/styles/badge.css
+- Use const by default, let only when reassignment is genuinely needed, never var
+- Prefer early returns over nested if/else
+- Name booleans with is/has prefix: isEnabled, hasRating
+- Cache DOM queries — never query the same selector twice in a loop
+- Always handle the case where an API call returns null/undefined gracefully
+- No console.log left in final code — use a single DEBUG constant in constants.js
+
+---
+
+## RMP API Rules
+
+- The OSU school ID on RateMyProfessors is hardcoded in constants.js — never hardcode it elsewhere
+- Always strip middle names before sending to RMP search (OSU uses full legal names)
+- Always verify the returned professor's school matches Ohio State before injecting rating
+- If numRatings < 3, show the rating but add a "few ratings" warning in the tooltip
+- If wouldTakeAgainPercent === -1, display as "N/A" not a number
+- Cache results in a Map keyed by normalized name for the session to avoid duplicate API calls
+
+---
+
+## DOM / OSU Page Rules
+
+- Use MutationObserver in content/index.js — the OSU page loads results via XHR, not full page loads
+- Before processing a name node, check if it already has a badge injected (data-rmp-injected attribute)
+  to prevent duplicate badges on re-renders
+- "TBA" instructor names must be skipped — check in scraper.js before returning
+- Debounce the MutationObserver callback (300ms) to avoid thrashing on rapid DOM updates
+- All selectors are defined in constants.js — never hardcode a selector string in content scripts
+
+---
+
+## What To Do When Stuck
+
+- If the OSU DOM selector stops working: open DevTools on classes.osu.edu,
+  find the instructor name element, update INSTRUCTOR_NAME_SELECTOR in constants.js
+- If the RMP API returns 401/403: the Bearer token in constants.js may have changed.
+  Open DevTools on ratemyprofessors.com, go to Network tab, filter by "graphql",
+  search for any professor, copy the Authorization header value, update RMP_AUTH_TOKEN
+- If MutationObserver fires too often: increase OBSERVER_DEBOUNCE_MS in constants.js

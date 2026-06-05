@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "RMP x OSU",
+  "version": "1.0.0",
+  "description": "Injects RateMyProfessors ratings next to instructor names on classes.osu.edu",
+  "icons": {
+    "128": "icons/icon.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "128": "icons/icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/index.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://classes.osu.edu/*"],
+      "js": [
+        "src/shared/constants.js",
+        "src/shared/utils.js",
+        "src/content/scraper.js",
+        "src/content/tooltip.js",
+        "src/content/injector.js",
+        "src/content/index.js"
+      ],
+      "css": ["src/styles/badge.css"]
+    }
+  ],
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://classes.osu.edu/*",
+    "https://www.ratemyprofessors.com/*"
+  ]
+}

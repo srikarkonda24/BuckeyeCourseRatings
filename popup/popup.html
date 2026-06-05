@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RMP x OSU</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        min-width: 220px;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 14px;
+        color: #1e1e1e;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      p {
+        margin: 12px 0 0;
+        font-size: 12px;
+        color: #666666;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>RMP x OSU</h1>
+    <label>
+      <input type="checkbox" id="enabled-toggle" checked />
+      Show RMP ratings on classes.osu.edu
+    </label>
+    <p>Personal use only. Reload the course search page after toggling.</p>
+    <script src="../src/shared/constants.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
